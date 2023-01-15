@@ -1,8 +1,8 @@
 <template>
-  <div class="container">
-      <navbar/>
-      <router-view/>
-  </div>
+	<div class="container">
+		<navbar />
+		<router-view/>
+	</div>
   
 </template>
 
@@ -11,10 +11,27 @@
 import Navbar from './components/Navbar.vue'
 
 export default {
-  name: 'App',
-  components: {
-    Navbar
-  }
+	name: 'App',
+	components: {
+		Navbar
+	},
+	created() {
+
+    },
+    data() {
+        return {
+            
+        }
+    },
+    props: {
+        player: {}
+    },
+    mounted() {
+        
+    },
+    methods: {
+		
+    }
 }
 </script>
 
@@ -23,7 +40,7 @@ export default {
 @import './styles/bootstrap/_variables.scss';
 
 #app {
-  text-align: center;
-  margin-top: 60px;
+	text-align: center;
+	margin-top: 60px;
 }
 </style>

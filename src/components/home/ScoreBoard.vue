@@ -24,15 +24,7 @@ export default {
         }
     },
     mounted() {
-        // todo implement api
-        this.games = [
-            {"homeTeam": "Team Never Lucky", "homeTeamScore": 140.8, "awayTeam": "LBSC", "awayTeamScore": 105.74},
-            {"homeTeam": "Team Never Lucky", "homeTeamScore": 140.8, "awayTeam": "LBSC", "awayTeamScore": 105.74},
-            {"homeTeam": "Team Never Lucky", "homeTeamScore": 140.8, "awayTeam": "LBSC", "awayTeamScore": 105.74},
-            {"homeTeam": "Team Never Lucky", "homeTeamScore": 140.8, "awayTeam": "LBSC", "awayTeamScore": 105.74},
-            {"homeTeam": "Team Never Lucky", "homeTeamScore": 140.8, "awayTeam": "LBSC", "awayTeamScore": 105.74},
-            {"homeTeam": "Team Never Lucky", "homeTeamScore": 140.8, "awayTeam": "LBSC", "awayTeamScore": 105.74}
-        ]
+        
     },
     methods: {
     

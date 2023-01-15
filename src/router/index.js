@@ -1,10 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from "../views/Home.vue"
-import Rankings from "../views/Rankings.vue"
+import PowerRankings from "../views/PowerRankings.vue"
 import Team from "../views/Team.vue"
 import Player from "../views/Player.vue"
 import Articles from "../views/Articles.vue"
 import Draft from "../views/Draft.vue"
+import CareerStandings from "../views/CareerStandings.vue"
 
 
 const routes = [
@@ -17,9 +18,9 @@ const routes = [
         }
     },
     {
-        path: "/rankings",
-        name: "rankings",
-        component: Rankings,
+        path: "/power-rankings",
+        name: "power-rankings",
+        component: PowerRankings,
         meta: {
           guest: true
         }
@@ -55,7 +56,15 @@ const routes = [
         meta: {
           guest: true
         }
-  },
+    },
+    {
+      path: '/career-standings',
+      name: 'career-standings',
+      component: CareerStandings,
+      meta: {
+        guest: true
+      }
+    },
 ]
 
 const router = createRouter({

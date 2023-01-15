@@ -18,7 +18,7 @@
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/rankings">Rankings</a>
+                        <a class="nav-link active" aria-current="page" href="/power-rankings">Power Rankings</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/draft">Draft History</a>
@@ -40,17 +40,20 @@ export default {
     data(){
         return {
             teams: [],
-            teamsIsActive: false
+            teamsIsActive: false,
+            league: {}
         }
     },
     mounted() {
         return Promise.all([
-            this.$ymysApi.get("/teams")
+            this.$ymysApi.get("/teams"),
+            this.$ymysApi.get("/league/info")
         ]).then((responses) => {
-            const [teamsResponse] = responses;
+            const [teamsResponse, leagueResponse] = responses;
             this.teams = teamsResponse.data.results.map((team) => {
                 return { ...team, url: `/team/${team.espn_team_id}`};
             });
+            this.leagueIngo = leagueResponse.data.results;
             })
         .catch((error) => {
             console.error(error.response);

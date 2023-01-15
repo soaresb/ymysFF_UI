@@ -1,32 +1,40 @@
 <template>
-    <div class="row">
-        <team-header :team="this.team"/>
-    </div>
-    <nav>
-        <div class="nav nav-tabs" id="nav-tab" role="tablist">
-            <button class="nav-link active" id="nav-roster-tab" data-bs-toggle="tab" data-bs-target="#nav-roster" type="button" role="tab" aria-controls="nav-roster" aria-selected="true">Roster</button>
-            <button class="nav-link" id="nav-matchups-tab" data-bs-toggle="tab" data-bs-target="#nav-matchups" type="button" role="tab" aria-controls="nav-matchups" aria-selected="false">Matchups</button>
-            <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Contact</button>
+    <div class="container">
+        <div class="row">
+            <team-header :team="this.team"/>
         </div>
-    </nav>
-    <div class="tab-content" id="nav-tabContent">
-        <div class="tab-pane fade show active" id="nav-roster" role="tabpanel" aria-labelledby="nav-roster-tab">
-            <dropdown :options="years" :selected="year" v-on:updateOption="onSelectYear"></dropdown>
-            <dropdown :options="weeks" :selected="week" v-on:updateOption="onSelectWeek"></dropdown>
-            <div class="row">
-                <div class="col-12">
-                    <team-players :players="this.roster"/>
+        <nav>
+            <div class="nav nav-tabs justify-content-end" id="nav-tab" role="tablist">
+                <button class="nav-link active" id="nav-roster-tab" data-bs-toggle="tab" data-bs-target="#nav-roster" type="button" role="tab" aria-controls="nav-roster" aria-selected="true">Roster</button>
+                <button class="nav-link" id="nav-matchups-tab" data-bs-toggle="tab" data-bs-target="#nav-matchups" type="button" role="tab" aria-controls="nav-matchups" aria-selected="false">Matchups</button>
+                <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Contact</button>
+            </div>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="nav-roster" role="tabpanel" aria-labelledby="nav-roster-tab">
+                <dropdown :options="years" :selected="year" v-on:updateOption="onSelectYear"></dropdown>
+                <dropdown :options="weeks" :selected="week" v-on:updateOption="onSelectWeek"></dropdown>
+                <div class="row" style="border: 1px solid; border-radius: 10px;">
+                    <div class="col-12">
+                        <team-players v-if="this.roster" :players="this.roster"/>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="nav-matchups" role="tabpanel" aria-labelledby="nav-matchups-tab">
+                <div class="row">
+                    <div class="col-12">
+                        <team-matchups />
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+                <div class="row">
+                    <div class="col-12">
+                        <team-draft-history v-if="this.teamDraftHistory" :draftHistory="this.teamDraftHistory"/>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="tab-pane fade" id="nav-matchups" role="tabpanel" aria-labelledby="nav-matchups-tab">
-            <div class="row">
-                <div class="col-12">
-                    <team-matchups />
-                </div>
-            </div>
-        </div>
-        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">...</div>
     </div>
     
 </template>
@@ -37,6 +45,7 @@
 import TeamPlayers from '../components/team/TeamPlayers.vue';
 import TeamHeader from '../components/team/TeamHeader.vue';
 import TeamMatchups from '../components/team/TeamMatchups.vue';
+import TeamDraftHistory from '../components/team/TeamDraftHistory.vue';
 import dropdown from 'vue-dropdowns';
 const _ = require("lodash")
 
@@ -47,6 +56,7 @@ export default {
       TeamPlayers,
       TeamHeader,
       TeamMatchups,
+      TeamDraftHistory,
       'dropdown': dropdown,
   },
   created() {
@@ -59,25 +69,27 @@ export default {
           team: {},
           matchups: [],
           year: {
-            year: 2021,
-            name: 2021
+            year: 2022,
+            name: 2022
           },
           week: {
-            week: 16,
-            name: 16
+            week: 17,
+            name: 17
           },
           weeks: [],
-          years: []
+          years: [],
+          teamDraftHistory: null
       }
   },
   mounted() {
       this.fetchRoster(null, null);
       return Promise.all([
       this.$ymysApi.get(`/team/${this.$route.params.teamId}`, ),
-      this.$ymysApi.get(`/seasons`)
+      this.$ymysApi.get(`/seasons`),
+      this.$ymysApi.get(`/team/${this.$route.params.teamId}/draftpicks?details=true`, { details: true })
     ])
       .then((responses) => {
-        const [teamResponse, seasonsResponse] = responses;
+        const [teamResponse, seasonsResponse, teamDraftHistory] = responses;
         this.team = teamResponse.data.results;
         this.seasons = seasonsResponse.data.results;
         this.years = seasonsResponse.data.results.seasons.map((season) => {
@@ -86,6 +98,7 @@ export default {
         this.weeks = _.last(this.seasons.seasons).weeks.map((week) => {
           return { week, name: week };
         });
+        this.teamDraftHistory = teamDraftHistory.data.results;
         
       })
       .catch((error) => {

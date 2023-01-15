@@ -1,5 +1,5 @@
 <template>
-    <div class="row">
+    <div class="row player-header">
         <h1>{{this.team.name}}</h1>
     </div>
 </template>

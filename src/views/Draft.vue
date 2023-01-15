@@ -1,7 +1,12 @@
 <template>
     <h1>YMYS Draft {{this.year.year}}</h1>
-    <dropdown :options="years" :selected="year" v-on:updateOption="onSelectYear" :placeholder="this.year.year"></dropdown>
-    <draft-table :rounds="this.rounds" :order="this.order" />
+    <dropdown class="draft-dropdown" :options="years" :selected="year" v-on:updateOption="onSelectYear" :placeholder="this.year.year"></dropdown>
+    <div v-if="this.loading" class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+    <draft-table v-if="!this.loading" :rounds="this.rounds" :order="this.order" />
 </template>
 
 <script>
@@ -28,7 +33,8 @@ export default {
             year: {
                 year: 2021
             },
-            years: []
+            years: [],
+            loading: true
         }
     },
     mounted() {
@@ -58,6 +64,7 @@ export default {
             })
             this.rounds = r;
             this.order = r[0].map((pick) => pick.team.name);
+            this.loading = false;
         },
 
         fetchDraft(year) {
@@ -78,6 +85,7 @@ export default {
         },
 
         onSelectYear(payload) {
+            this.loading = true;
             const { year }  = payload;
             this.year = {
                 year,
@@ -88,3 +96,13 @@ export default {
     }
 }
 </script>
+
+<style lang="scss">
+
+    .draft-dropdown {
+        border: 1px solid white;
+        display: inline-block !important;
+        
+    }
+
+</style>

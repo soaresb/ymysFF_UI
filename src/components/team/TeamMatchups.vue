@@ -1,6 +1,6 @@
 <template>
     <div>
-        <dropdown :options="opponents" :selected="opponent" v-on:updateOption="onSelectOpponent"></dropdown>
+        <dropdown class="opponent-dropdown" :options="opponents" :selected="opponent" v-on:updateOption="onSelectOpponent" :placeholder="'Opponent'" value="Opponent"></dropdown>
     </div>
     <table class="table table-scroll table-striped">
         <thead>
@@ -9,10 +9,9 @@
             <th class="team-matchups-header">Team</th>
             <th :class="[teamScoreClass]" v-on:click="this.sortMatchups('team_score')">
                 Score
-                <li><span class="arrow arrow-bottom"></span></li>
             </th>
-            <th class="team-matchups-header" >Opponent</th>
-            <th class="team-matchups-header interactive" v-on:click="this.sortMatchups('opponent_team_score')">Opponent Score</th>
+            <th class="team-matchups-header">Opponent</th>
+            <th :class="[opponentScoreClass]" v-on:click="this.sortMatchups('opponent_team_score')">Opponent Score</th>
         </thead>
         <tbody>
             <team-matchup v-for="matchup in this.matchups" v-bind:key="matchup.id" :matchup="matchup"/>
@@ -41,12 +40,13 @@ export default {
             allMatchups: [],
             matchups: [],
             opponent: {
-                name: ""
+                name: "Select an opponent"
             },
             opponents: [],
             team_score_sort: null,
             opponent_score_sort: null,
-            teamScoreClass: "team-matchups-header interactive"
+            teamScoreClass: "team-matchups-header interactive",
+            opponentScoreClass: "team-matchups-header interactive"
         }
     },
     mounted() {
@@ -113,20 +113,25 @@ export default {
                     return _.orderBy(matchups, ["team_score"], ["desc"]);
                 } else if (this.team_score_sort === "asc") {
                     this.team_score_sort = "desc";
+                    this.teamScoreClass = "team-matchups-header interactive-desc"
                     return _.orderBy(matchups, ["team_score"], ["desc"]);
                 } else {
                     this.team_score_sort = "asc";
+                    this.teamScoreClass = "team-matchups-header interactive-asc"
                     return _.orderBy(matchups, ["team_score"]);
                 }
             } else if (team === "opponent") {
                 if (_.isNull(this.opponent_score_sort)) {
                     this.opponent_score_sort = "desc";
+                    this.opponentScoreClass = "team-matchups-header interactive-desc"
                     return _.orderBy(matchups, ["opponent_score"], ["desc"]);
                 } else if (this.opponent_score_sort === "asc") {
                     this.opponent_score_sort = "desc";
+                    this.opponentScoreClass = "team-matchups-header interactive-desc"
                     return _.orderBy(matchups, ["opponent_score"], ["desc"]);
                 } else {
                     this.opponent_score_sort = "asc";
+                    this.opponentScoreClass = "team-matchups-header interactive-asc"
                     return _.orderBy(matchups, ["opponent_score"]);
                 }
             }
@@ -157,7 +162,16 @@ export default {
             text-decoration:underline;
 
             &:after {
-                content: "→";
+                content: "↑";
+            }
+        }
+
+        &.interactive-asc {
+            cursor:pointer;
+            text-decoration:underline;
+
+            &:after {
+                content: "↓";
             }
         }
 
@@ -176,7 +190,16 @@ export default {
         .arrow-bottom {
             transform: rotate(135deg);
         }
+
         
+    }
+
+    .opponent-dropdown {
+        border: 1px solid white !important;
+
+        ::v-deep .dropdown-toggle-placeholder {
+            color: #c4c4c4;
+        }
     }
 
 </style>
